@@ -1,0 +1,12 @@
+controller:
+  replicaCount: 2
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+  metrics:
+    enabled: true

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../base
+patches:
+  - path: deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: dcomforters-kitchen
+  - path: resource-patch.yaml
+    target:
+      kind: Deployment
+      name: dcomforters-kitchen
+  - path: configmap-patch.yaml
+    target:
+      kind: ConfigMap
+      name: dcomforters-config
+commonLabels:
+  environment: production

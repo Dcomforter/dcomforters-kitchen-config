@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dcomforters-config
+  namespace: production
+  labels:
+    app: dcomforters-kitchen
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  APP_NAME: "Dcomforters Kitchen"
+  LOG_LEVEL: "info"
+  TZ: "America/New_York"
+  ALLOWED_ORIGINS: "https://dcomforters.yourdomain.com"
