@@ -15,7 +15,7 @@ spec:
         releaseName: ingress-nginx
         valueFiles:
           - $values/infrastructure/ingress-nginx/values.yaml
-    - repoURL: https://github.com/<your-org>/dcomforters-kitchen-config.git
+    - repoURL: https://github.com/Dcomforter/dcomforters-kitchen-config.git
       targetRevision: main
       ref: values
   destination:

@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-org>/dcomforters-kitchen-config.git
+    repoURL: https://github.com/Dcomforter/dcomforters-kitchen-config.git
     targetRevision: main
     path: apps/dcomforters/overlays/production
   destination:
