@@ -9,4 +9,4 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/<your-org>/dcomforters-kitchen:PLACEHOLDER_TAG
+          image: ghcr.io/dcomforter/dcomforters-kitchen:v1.0.0
