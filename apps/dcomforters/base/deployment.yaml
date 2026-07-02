@@ -37,7 +37,7 @@ spec:
           image: ghcr.io/<your-org>/dcomforters-kitchen:latest
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 8000
               protocol: TCP
           envFrom:
             - configMapRef:
@@ -60,22 +60,22 @@ spec:
               memory: "512Mi"
           readinessProbe:
             httpGet:
-              path: /health
-              port: 3000
+              path: /
+              port: 8000
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /health
-              port: 3000
+              path: /
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 3
           startupProbe:
             httpGet:
-              path: /health
-              port: 3000
+              path: /
+              port: 8000
             failureThreshold: 12
             periodSeconds: 5
       terminationGracePeriodSeconds: 30
