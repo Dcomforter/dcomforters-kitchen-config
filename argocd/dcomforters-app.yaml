@@ -14,6 +14,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: production
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: dcomforters-kitchen
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     automated:
       prune: true
