@@ -9,4 +9,4 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/dcomforter/dcomforters-kitchen:v1.0.5
+          image: ghcr.io/dcomforter/dcomforters-kitchen:v1.0.6
