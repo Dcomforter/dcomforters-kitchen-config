@@ -1,0 +1,82 @@
+mode: deployment
+replicaCount: 1
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+
+ports:
+  jaeger-compact:
+    enabled: false
+  jaeger-thrift:
+    enabled: false
+  jaeger-grpc:
+    enabled: false
+  zipkin:
+    enabled: false
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+extraEnvs:
+  - name: GRAFANA_OTLP_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        name: grafana-cloud-otlp
+        key: endpoint
+  - name: GRAFANA_INSTANCE_ID
+    valueFrom:
+      secretKeyRef:
+        name: grafana-cloud-otlp
+        key: instance-id
+  - name: GRAFANA_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: grafana-cloud-otlp
+        key: api-token
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+    prometheus: null
+    jaeger: null
+    zipkin: null
+
+  extensions:
+    basicauth/grafana:
+      client_auth:
+        username: ${env:GRAFANA_INSTANCE_ID}
+        password: ${env:GRAFANA_API_TOKEN}
+
+  exporters:
+    otlphttp/grafana:
+      endpoint: ${env:GRAFANA_OTLP_ENDPOINT}
+      auth:
+        authenticator: basicauth/grafana
+
+  service:
+    extensions:
+      - health_check
+      - basicauth/grafana
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlphttp/grafana, debug]
+      metrics:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlphttp/grafana, debug]
+      logs:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlphttp/grafana, debug]
