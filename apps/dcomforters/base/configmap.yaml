@@ -12,6 +12,7 @@ data:
   LOG_LEVEL: "info"
   TZ: "America/New_York"
   ALLOWED_ORIGINS: "https://dcomforters.yourdomain.com"
+  DJANGO_SETTINGS_MODULE: "secondproject.settings"
   OTEL_SERVICE_NAME: "dcomforters-kitchen"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=dcomforters,deployment.environment=production"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318"
