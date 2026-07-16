@@ -38,6 +38,16 @@ extraEnvs:
       secretKeyRef:
         name: grafana-cloud-otlp
         key: api-token
+  - name: DYNATRACE_OTLP_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        name: dynatrace-otlp
+        key: endpoint
+  - name: DYNATRACE_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: dynatrace-otlp
+        key: api-token
 
 config:
   receivers:
@@ -62,6 +72,10 @@ config:
       endpoint: ${env:GRAFANA_OTLP_ENDPOINT}
       auth:
         authenticator: basicauth/grafana
+    otlphttp/dynatrace:
+      endpoint: ${env:DYNATRACE_OTLP_ENDPOINT}
+      headers:
+        Authorization: "Api-Token ${env:DYNATRACE_API_TOKEN}"
 
   service:
     extensions:
@@ -71,12 +85,12 @@ config:
       traces:
         receivers: [otlp]
         processors: [memory_limiter, batch]
-        exporters: [otlphttp/grafana, debug]
+        exporters: [otlphttp/grafana, otlphttp/dynatrace, debug]
       metrics:
         receivers: [otlp]
         processors: [memory_limiter, batch]
-        exporters: [otlphttp/grafana, debug]
+        exporters: [otlphttp/grafana, otlphttp/dynatrace, debug]
       logs:
         receivers: [otlp]
         processors: [memory_limiter, batch]
-        exporters: [otlphttp/grafana, debug]
+        exporters: [otlphttp/grafana, otlphttp/dynatrace, debug]
