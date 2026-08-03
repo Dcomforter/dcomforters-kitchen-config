@@ -7,15 +7,17 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://charts.jetstack.io
-    chart: cert-manager
-    targetRevision: v1.14.5
-    helm:
-      releaseName: cert-manager
-      parameters:
-        - name: installCRDs
-          value: "true"
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.14.5
+      helm:
+        releaseName: cert-manager
+        valueFiles:
+          - $values/infrastructure/cert-manager/values.yaml
+    - repoURL: https://github.com/Dcomforter/dcomforters-kitchen-config.git
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
