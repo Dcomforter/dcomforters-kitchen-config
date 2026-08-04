@@ -21,3 +21,8 @@ data:
   OTEL_METRICS_EXPORTER: "otlp"
   OTEL_LOGS_EXPORTER: "otlp"
   OTEL_PYTHON_LOG_CORRELATION: "true"
+  # otel-collector is currently undeployed (Grafana Cloud + Dynatrace trials
+  # expired 2026-07-31) -- without this, every request retries and fails to
+  # export against a Service that no longer exists, spamming pod logs.
+  # Remove this line once a new collector/backend is back in place.
+  OTEL_SDK_DISABLED: "true"
