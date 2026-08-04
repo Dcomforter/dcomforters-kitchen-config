@@ -1,0 +1,49 @@
+# Lean config for 3x t3.small (2 vCPU / 2GB RAM) nodes with no dynamic
+# storage provisioning (no cloud-controller-manager / EBS CSI driver) —
+# see RUNBOOK.md. Server runs on emptyDir; metrics are lost on pod
+# restart, which is an accepted tradeoff for now.
+alertmanager:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false
+
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 50m
+      memory: 64Mi
+
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 16Mi
+    limits:
+      cpu: 50m
+      memory: 32Mi
+
+configmapReload:
+  prometheus:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 50m
+        memory: 32Mi
+
+server:
+  retention: "24h"
+  persistentVolume:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
