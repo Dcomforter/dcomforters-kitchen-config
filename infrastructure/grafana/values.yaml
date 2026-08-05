@@ -14,6 +14,16 @@ resources:
     cpu: 200m
     memory: 128Mi
 
+# Points at a Secret created out-of-band (kubectl, not committed here) —
+# the chart's own random-password generation isn't idempotent under Argo
+# CD's helm-template rendering, so it was silently rotating the admin
+# password on every sync. See RUNBOOK.md for how to recreate this Secret
+# if it's ever lost.
+admin:
+  existingSecret: grafana-admin-credentials
+  userKey: admin-user
+  passwordKey: admin-password
+
 datasources:
   datasources.yaml:
     apiVersion: 1
