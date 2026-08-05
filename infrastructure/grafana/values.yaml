@@ -24,6 +24,38 @@ datasources:
         url: http://prometheus-server.monitoring.svc.cluster.local
         isDefault: true
 
+# Community dashboards pulled from grafana.com at pod start, pinned to a
+# specific revision so they don't change under us. No sidecar pod needed
+# (keeps the resource footprint down) — swap for the sidecar+ConfigMap
+# pattern later if custom/hand-built dashboards are needed.
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    node-exporter-full:
+      gnetId: 1860
+      revision: 45
+      datasource: Prometheus
+    prometheus-stats:
+      gnetId: 3662
+      revision: 2
+      datasource: Prometheus
+    kubernetes-cluster-monitoring:
+      gnetId: 315
+      revision: 3
+      datasource: Prometheus
+
 # Placeholder domain, same as apps/dcomforters/base/ingress.yaml — needs a
 # local hosts-file entry pointing at a worker EIP until real DNS exists.
 ingress:
