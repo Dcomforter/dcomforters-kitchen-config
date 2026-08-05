@@ -8,6 +8,7 @@ name: Force Argo CD refresh
 on:
   push:
     branches: [main]
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -32,6 +33,16 @@ jobs:
         run: |
           aws ssm get-parameter --name /dck/prod/kubeconfig --with-decryption \
             --query Parameter.Value --output text > kubeconfig
+          # The stored parameter is the raw admin kubeconfig pointing at
+          # the controller's public IP on 6443 -- not reachable, the
+          # apiserver has no public ingress at all. Rewrite it to go
+          # through the SSM tunnel opened in the next step instead. That
+          # tunnel's cert doesn't cover 127.0.0.1, hence skip-tls-verify
+          # (same as the operator's own local kubeconfig).
+          sed -i \
+            -e 's#server: https://[^[:space:]]*:6443#server: https://127.0.0.1:16443#' \
+            -e '/server:/a\    insecure-skip-tls-verify: true' \
+            kubeconfig
 
       - name: Open SSM tunnel to controller
         run: |
@@ -54,7 +65,18 @@ jobs:
         env:
           KUBECONFIG: kubeconfig
         run: |
-          for app in $(kubectl get applications -n argocd -o jsonpath='{.items[*].metadata.name}'); do
+          # Deliberately not `for app in $(...)` -- a failed command
+          # substitution there doesn't trip `set -e`, so a dead cluster
+          # connection would silently iterate zero times and this step
+          # would report success having refreshed nothing (exactly what
+          # happened on the first live run: a connection timeout was
+          # masked as a clean pass). Capture it and check explicitly.
+          apps="$(kubectl get applications -n argocd -o jsonpath='{.items[*].metadata.name}')"
+          if [ -z "$apps" ]; then
+            echo "::error::kubectl couldn't reach the cluster (or there are no Applications) -- see the previous steps' logs"
+            exit 1
+          fi
+          for app in $apps; do
             echo "Refreshing $app"
             kubectl patch application "$app" -n argocd --type merge \
               -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}'
