@@ -38,8 +38,12 @@ jobs:
           # apiserver has no public ingress at all. Rewrite it to go
           # through the SSM tunnel opened in the next step instead. That
           # tunnel's cert doesn't cover 127.0.0.1, hence skip-tls-verify
-          # (same as the operator's own local kubeconfig).
+          # -- which kubectl refuses to combine with a
+          # certificate-authority-data field also being present, so that
+          # has to go too (same shape as the operator's own local
+          # kubeconfig, which has neither).
           sed -i \
+            -e '/certificate-authority-data:/d' \
             -e 's#server: https://[^[:space:]]*:6443#server: https://127.0.0.1:16443#' \
             -e '/server:/a\    insecure-skip-tls-verify: true' \
             kubeconfig
