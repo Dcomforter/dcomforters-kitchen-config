@@ -65,6 +65,13 @@ dashboards:
       gnetId: 315
       revision: 3
       datasource: Prometheus
+    # Per-ingress request rate / error rate / latency, fed by the
+    # ingress-nginx controller's metrics (scraped via pod annotations, see
+    # infrastructure/ingress-nginx/values.yaml).
+    nginx-ingress-controller:
+      gnetId: 9614
+      revision: 1
+      datasource: Prometheus
 
 # Placeholder domain, same as apps/dcomforters/base/ingress.yaml — needs a
 # local hosts-file entry pointing at a worker EIP until real DNS exists.
