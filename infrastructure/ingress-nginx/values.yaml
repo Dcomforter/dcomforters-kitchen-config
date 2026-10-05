@@ -1,5 +1,12 @@
 controller:
   replicaCount: 2
+  # Opt in to the Prometheus chart's annotation-based `kubernetes-pods`
+  # scrape job (infrastructure/prometheus) — there's no Prometheus
+  # Operator here, so ServiceMonitors aren't an option. Port must match
+  # controller.metrics.port (chart default 10254).
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
   service:
     type: NodePort
     nodePorts:
