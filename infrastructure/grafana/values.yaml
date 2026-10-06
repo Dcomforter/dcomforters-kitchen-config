@@ -6,13 +6,16 @@ replicas: 1
 persistence:
   enabled: false
 
+# Grafana 12 idles well above 128Mi. The chart sets GOMEMLIMIT to the memory
+# limit, so a tight limit makes the Go GC thrash, which pins the CPU limit and
+# the 1s readiness probe starts timing out.
 resources:
   requests:
-    cpu: 50m
-    memory: 64Mi
+    cpu: 100m
+    memory: 192Mi
   limits:
-    cpu: 200m
-    memory: 128Mi
+    cpu: 500m
+    memory: 384Mi
 
 # Points at a Secret created out-of-band (kubectl, not committed here) —
 # the chart's own random-password generation isn't idempotent under Argo
